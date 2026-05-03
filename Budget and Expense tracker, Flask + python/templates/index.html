@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budget Tracker</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f5f5f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.3px;
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat {
+      background: #fff;
+      border: 0.5px solid #e0ddd5;
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+    }
+
+    .stat label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .stat span {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .inc {
+      color: #2e7d32;
+    }
+
+    .exp {
+      color: #c62828;
+    }
+
+    .bal {
+      color: #1a1a1a;
+    }
+
+    .neg {
+      color: #c62828;
+    }
+
+    .pos {
+      color: #2e7d32;
+    }
+
+    /* Form */
+    .form-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 8px;
+      margin-bottom: 1.2rem;
+    }
+
+    input,
+    select,
+    button {
+      height: 38px;
+      border: 0.5px solid #d0cdc5;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      color: #1a1a1a;
+      padding: 0 11px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input::placeholder {
+      color: #bbb;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #999;
+    }
+
+    button {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+      cursor: pointer;
+      padding: 0 18px;
+      font-weight: 500;
+      white-space: nowrap;
+      border-radius: 8px;
+      transition: opacity 0.15s;
+    }
+
+    button:hover {
+      opacity: 0.82;
+    }
+
+    /* List */
+    .list {
+      background: #fff;
+      border: 0.5px solid #e0ddd5;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .list-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 36px;
+      gap: 8px;
+      padding: 0.55rem 1rem;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #999;
+      background: #faf9f6;
+      border-bottom: 0.5px solid #e0ddd5;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 36px;
+      gap: 8px;
+      padding: 0.72rem 1rem;
+      align-items: center;
+      font-size: 14px;
+      border-bottom: 0.5px solid #eeece6;
+      transition: background 0.1s;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item:hover {
+      background: #faf9f6;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    .inc-badge {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .exp-badge {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .del {
+      width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #bbb;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.1s, color 0.1s;
+    }
+
+    .del:hover {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    @media (max-width: 500px) {
+      .form-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-row input[type="text"] {
+        grid-column: span 2;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>budget tracker</h1>
+
+    <div class="stats">
+      <div class="stat"><label>Income</label><span class="inc" id="inc">${{ income }}</span></div>
+      <div class="stat"><label>Expenses</label><span class="exp" id="exp">${{ expense }}</span></div>
+      <div class="stat"><label>Balance</label><span class="bal" id="bal">${{ balance }}</span></div>
+    </div>
+
+    <!-- We changed a <div> to a <form>, added a POST method, and pointed it to a new '/add' route -->
+    <form class="form-row" action="/add" method="POST">
+      <!-- Notice the new 'name' attributes on these inputs! -->
+      <input type="text" name="desc" placeholder="description" required />
+      <input type="number" name="amt" placeholder="amount" min="0" step="0.01" required />
+      <select name="type">
+        <option value="income">income</option>
+        <option value="expense">expense</option>
+      </select>
+      <!-- We removed the onclick JS and made it a standard submit button -->
+      <button type="submit">add</button>
+    </form>
+
+    <!-- <div class="form-row">
+    <input type="text"   id="desc" placeholder="description" />
+    <input type="number" id="amt"  placeholder="amount" min="0" step="0.01" />
+    <select id="type">
+      <option value="income">income</option>
+      <option value="expense">expense</option>
+    </select>
+    <button onclick="addEntry()">add</button>
+  </div> -->
+
+    <div class="list">
+      <div class="list-header">
+        <span>description</span>
+        <span>category</span>
+        <span>amount</span>
+        <span></span>
+      </div>
+      <div id="entries">
+
+        {% if transactions %}
+
+        {% for t in transactions %}
+        <div class="item">
+          <span>{{ t.description }}</span>
+
+          <span>
+            <span class="badge {% if t.category == 'income' %}inc-badge{% else %}exp-badge{% endif %}">
+              {{ t.category }}
+            </span>
+          </span>
+
+          <span>${{ t.amount }}</span>
+            
+            <!-- Adding a small flex container to hold both buttons side-by-side -->
+            <div style="display: flex; gap: 5px;">
+              <!-- Edit Button (This is a normal GET request link) -->
+              <a href="/edit/{{ t.id }}" style="text-decoration: none; font-size: 12px; color: #666; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">edit</a>
+              
+              <!-- Your existing Delete Form -->
+              <form action="/delete/{{ t.id }}" method="POST" style="margin:0;">
+                <button type="submit" class="del">×</button>
+              </form>
+            </div>
+
+          <!-- We wrap the button in a form so it can send a POST request to our new dynamic URL -->
+          <form action="/delete/{{ t.id }}" method="POST">
+            <button type="submit" class="del">×</button>
+          </form>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <div class="empty">no entries yet — add your first transaction above</div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

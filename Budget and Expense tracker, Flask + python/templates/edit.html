@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Edit Transaction</title>
+<style>
+  /* Keeping your exact CSS for the form and body */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; display: flex; justify-content: center; padding: 2.5rem 1rem; }
+  .container { width: 100%; max-width: 640px; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; }
+  .form-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; margin-bottom: 1.2rem; }
+  input, select, button { height: 38px; border: 0.5px solid #d0cdc5; border-radius: 8px; font-size: 14px; padding: 0 11px; outline: none; }
+  button { background: #1a1a1a; color: #fff; cursor: pointer; padding: 0 18px; border-radius: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Edit Transaction</h1>
+
+  <!-- The form POSTs back to the exact same URL it's currently on -->
+  <form class="form-row" action="/edit/{{ t.id }}" method="POST">
+    
+    <!-- We use the value="" attribute to pre-fill the boxes with the existing database data -->
+    <input type="text" name="desc" value="{{ t.description }}" required />
+    <input type="number" name="amt" value="{{ t.amount }}" min="0" step="0.01" required />
+    
+    <select name="type">
+      <!-- Jinja IF statements to automatically select 'income' or 'expense' based on what is in the database -->
+      <option value="income" {% if t.category == 'income' %}selected{% endif %}>income</option>
+      <option value="expense" {% if t.category == 'expense' %}selected{% endif %}>expense</option>
+    </select>
+    
+    <button type="submit">Save Changes</button>
+  </form>
+  
+  <a href="/" style="font-size: 14px; color: #888; text-decoration: none;">← Cancel and go back</a>
+</div>
+</body>
+</html>
